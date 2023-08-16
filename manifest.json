@@ -1,0 +1,53 @@
+{
+    "manifest_version": 3,
+    "name": "xmsfasdeo",
+    "version": "0.1",
+    "description": "Fast forward video by 90 seconds",
+    "permissions": [
+        "commands",
+        "scripting"
+       ],
+    "host_permissions": [
+        "*://*/*"
+      ],
+      "content_scripts": [
+        {
+          "matches": ["<all_urls>"],
+          "js": ["contentScript.js"],
+          "run_at": "document_idle",
+          "all_frames": true
+        }
+      ],
+    "icons": {
+        "16": "icon/icon16.png",
+        "64": "icon/icon64.png"
+    },
+    "action": {
+        "default_icon": {
+            "16": "icon/icon16.png",
+            "64": "icon/icon64.png"
+        }
+    },
+
+    "background": {
+        "service_worker": "background.js"
+      },
+      "commands": {
+        "fastForward": {
+          "suggested_key": {
+            "default": "Ctrl+Right",
+            "mac": "Command+Right"
+          },
+          "description": "Fast forward video by 90 seconds"
+        },
+        "fastBackward": {
+          "suggested_key": {
+            "default": "Ctrl+Left",
+            "mac": "Command+Left"
+          },
+          "description": "Fast backward video by 90 seconds"
+        }
+      }
+      
+      
+}
