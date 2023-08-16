@@ -5,7 +5,8 @@
     "description": "Fast forward video by 90 seconds",
     "permissions": [
         "commands",
-        "scripting"
+        "scripting",
+        "tabs"
        ],
     "host_permissions": [
         "*://*/*"
