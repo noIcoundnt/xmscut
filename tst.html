@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* 样式用于弹出窗口 */
+    #popup {
+      display: none;
+      position: fixed;
+      left: 10px;
+      top: 10px;
+      background: #fff;
+      border: 1px solid #000;
+      padding: 10px;
+      box-shadow: 2px 2px 5px #888888;
+      z-index: 1000;
+    }
+    /* 样式用于关闭按钮 */
+    #closeButton {
+      float: right;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- 弹出窗口内容 -->
+  <div id="popup">
+    <span id="closeButton">X</span>
+    <h2>Popup Window</h2>
+    <p>Some information goes here.</p>
+  </div>
+
+  <!-- 你的页面内容 -->
+
+  <script src="background.js"></script>
+</body>
+</html>
