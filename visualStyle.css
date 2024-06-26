@@ -1,0 +1,13 @@
+.selected::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20%;
+    height: 20%;
+    border-top: 2px solid transparent;
+    border-left: 2px solid transparent;
+    border-image: linear-gradient(to bottom right, #FF0000, #FFFFFF00) 1;
+    border-radius: 5px 0 0 0;
+    z-index: 1;
+  }

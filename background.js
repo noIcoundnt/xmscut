@@ -1,6 +1,9 @@
 
 let originalPlaybackRate = 1;
-//
+// let fast = false;
+
+var allowedDomains = ["www.youtube.com", "gamer.com.tw"];
+
 
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -34,10 +37,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       if (tabs.length > 0) { // 确保至少有一个 tab 选项卡
         console.log(tabs.length);
-        
+
         var tab = tabs[0];
         console.log(tab);
-        
+
         var tabId = tab.id;
 
         chrome.scripting.executeScript({
@@ -58,16 +61,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     });
   }
   else if (message.command === "fastSpeed") {
-  
+
     console.log("[FastForwardExtension] Fast backwarding videos by 90 seconds.");
 
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       if (tabs.length > 0) { // 确保至少有一个 tab 选项卡
         console.log(tabs.length);
-        
+
         var tab = tabs[0];
         console.log(tab);
-        
+
         var tabId = tab.id;
 
         chrome.scripting.executeScript({
@@ -77,7 +80,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             // console.log(tabId);
             videos.forEach((video) => {
               if (video) {
-                video.playbackRate += 0.25;              }
+                video.playbackRate += 0.25;
+              }
             });
           },
         });
@@ -88,15 +92,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   else if (message.command === "slowSpeed") {
     console.log("slow speed ");
-  
+
 
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       if (tabs.length > 0) { // 确保至少有一个 tab 选项卡
         console.log(tabs.length);
-        
+
         var tab = tabs[0];
         console.log(tab);
-        
+
         var tabId = tab.id;
 
         chrome.scripting.executeScript({
@@ -123,49 +127,73 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switchTabRight();
   }
   else if (message.command === "sannpeiicecream") {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       var url = tabs[0].url;
 
-      if (url && url.includes("www.youtube.com")) {
+      if (url && allowedDomains.some(domain => url.includes(domain))) {
         if (message.keyState === "keydown") {
           var tab = tabs[0];
-          console.log(tab);
-        
+          console.log("keydown");
           var tabId = tab.id;
-          
+          // fast = !fast;
           chrome.scripting.executeScript({
             target: { tabId: tabId },
             func: function () {
+              console.log('before exe');
               var videos = document.querySelectorAll("video");
-              // console.log(tabId);
               videos.forEach((video) => {
                 if (video) {
-                  if(video.playbackRate != 3){
-                    originalPlaybackRate = video.playbackRate;
-                    video.playbackRate = 3;    
-                  }        
+                  if (video.playbackRate === 1) {
+                    // originalPlaybackRate = video.playbackRate;
+                    video.playbackRate = 3;
+                  }
+                  else {
+                    // originalPlaybackRate = video.playbackRate;
+                    video.playbackRate = 1;
+                  }
+                }
+              });
+
+            },
+          });
+        }
+        else if(message.keyState === "keyup") {
+          var tab = tabs[0];
+          console.log(tab);
+
+          var tabId = tab.id;
+          chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            func: function () {
+              
+              var videos = document.querySelectorAll("video");
+              console.log("keyup");
+              videos.forEach((video) => {
+                if (video) {
+                  video.playbackRate = 1;
                 }
               });
             },
           });
-        } else if (message.keyState === "keyup") {
-          var tab = tabs[0];
-          console.log(tab);
-        
-          var tabId = tab.id;
-          chrome.scripting.executeScript({
-            target: { tabId: tabId },
-            func: function () {
-              var videos = document.querySelectorAll("video");
-              // console.log(tabId);
-              videos.forEach((video) => {
-                if (video) {
-                  video.playbackRate = originalPlaybackRate ; 
-                 }
-              });
-            },
-          });
         }
+        // else if (message.keyState === "keyup") {
+        //   var tab = tabs[0];
+        //   console.log(tab);
+
+        //   var tabId = tab.id;
+        //   chrome.scripting.executeScript({
+        //     target: { tabId: tabId },
+        //     func: function () {
+        //       var videos = document.querySelectorAll("video");
+        //       // console.log(tabId);
+        //       videos.forEach((video) => {
+        //         if (video) {
+        //           video.playbackRate = 1;
+        //         }
+        //       });
+        //     },
+        //   });
+        // }
       }
     });
   }
@@ -189,8 +217,8 @@ function switchTabLeft() {
 
   //   }
   // });
-  chrome.tabs.query({ currentWindow: true }, function(tabs) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function(activeTabs) {
+  chrome.tabs.query({ currentWindow: true }, function (tabs) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (activeTabs) {
       var activeTab = activeTabs[0];
       var currentIndex = tabs.findIndex(tab => tab.id === activeTab.id);
       var newIndex = currentIndex - 1;
@@ -212,8 +240,8 @@ function switchTabRight() {
 
   //   }
   // });
-  chrome.tabs.query({ currentWindow: true }, function(tabs) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function(activeTabs) {
+  chrome.tabs.query({ currentWindow: true }, function (tabs) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (activeTabs) {
       var activeTab = activeTabs[0];
       var currentIndex = tabs.findIndex(tab => tab.id === activeTab.id);
       var newIndex = currentIndex + 1;

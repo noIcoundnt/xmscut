@@ -3,12 +3,13 @@
     "manifest_version": 3,
     "name": "xmsfasdeo",
     "version": "0.1",
-    "description": "Fast forward video by 90 seconds",
+    "description": "xmt'script",
     "permissions": [
         "commands",
         "scripting",
         "tabs",
-        "activeTab"
+        "activeTab",
+        "storage"
        ],
     "host_permissions": [
         "*://*/*"
@@ -16,7 +17,8 @@
       "content_scripts": [
         {
           "matches": ["<all_urls>"],
-          "js": ["contentScript.js"],
+          "css": ["visualStyle.css"],
+          "js": ["contentNode.js","dailyFunction.js"],
           "run_at": "document_idle",
           "all_frames": true
         }
