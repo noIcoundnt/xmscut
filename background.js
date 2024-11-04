@@ -197,6 +197,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
     });
   }
+  else if( message.command === "selectTab"){
+    switchTab(message.index);
+  }
+  else if(message.command === "switchLastTab"){
+    switchToLastTab();
+  }
 });
 
 function isFocusedOnInput() {
@@ -252,3 +258,89 @@ function switchTabRight() {
     });
   });
 }
+
+function switchTab(index ){
+  chrome.tabs.query({ currentWindow: true }, function (tabs) {
+    // 确保 index 在有效范围内
+    if (index < 1 || index > tabs.length) {
+      console.error('Index out of range');
+      return;
+    }
+
+    // 获取要切换到的标签页的索引
+    var newIndex = index - 1; // 将用户输入的 1-9 转换为 0-8 索引
+
+    // 切换到指定的标签页
+    chrome.tabs.update(tabs[newIndex].id, { active: true });
+  });
+
+}
+let lastActiveTabs = [];
+
+chrome.tabs.onActivated.addListener(activeInfo => {
+  chrome.tabs.get(activeInfo.tabId, (tab) => {
+    if (tab) {
+      lastActiveTabs = lastActiveTabs.filter(t => t.id !== tab.id); // 移除已关闭的标签
+      lastActiveTabs.unshift(tab); // 将当前标签添加到前面
+      if (lastActiveTabs.length > 100) { // 保持最近的10个标签
+        lastActiveTabs.pop();
+      }
+    }
+  });
+});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+  // 移除已关闭的标签
+  lastActiveTabs = lastActiveTabs.filter(t => t.id !== tabId);
+});
+
+function switchToLastTab() {
+  if (lastActiveTabs.length > 1) {
+    const currentTab = lastActiveTabs.shift(); // 获取当前标签
+    const nextTab = lastActiveTabs[0]; // 获取下一个标签
+
+    if (nextTab) {
+      // 检查目标标签是否仍然存在
+      chrome.tabs.get(nextTab.id, (tab) => {
+        if (chrome.runtime.lastError || !tab) {
+          // 如果标签已关闭，移除它
+          lastActiveTabs.shift(); // 移除已关闭的标签
+          switchToLastTab(); // 递归调用，尝试下一个标签
+        } else {
+          // 切换到下一个标签
+          chrome.tabs.update(nextTab.id, { active: true });
+          lastActiveTabs.unshift(currentTab); // 将当前标签放回
+        }
+      });
+    }
+  }
+}
+
+
+//添加两个右键菜单
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    id: "searchGithub",
+    title: "Search GitHub for '%s'",
+    contexts: ["selection"]
+    
+  });
+
+  chrome.contextMenus.create({
+    id: "searchBing",
+    title: "Search Bing for '%s'",
+    contexts: ["selection"]
+  });
+});
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  let url = "";
+  if (info.menuItemId === "searchGithub") {
+    url = `https://github.com/search?q=${encodeURIComponent(info.selectionText)}`;
+  } else if (info.menuItemId === "searchBing") {
+    url = `https://www.bing.com/search?q=${encodeURIComponent(info.selectionText)}`;
+  }
+  if (url) {
+    chrome.tabs.create({ url });
+  }
+});

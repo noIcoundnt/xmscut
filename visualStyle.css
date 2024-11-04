@@ -1,4 +1,4 @@
-.selected::before {
+/* .selected::before {
     content: '';
     position: absolute;
     top: 0;
@@ -10,4 +10,4 @@
     border-image: linear-gradient(to bottom right, #FF0000, #FFFFFF00) 1;
     border-radius: 5px 0 0 0;
     z-index: 1;
-  }
+  } */

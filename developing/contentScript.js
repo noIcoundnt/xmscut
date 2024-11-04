@@ -1,3 +1,4 @@
+
 let contentnode = new contentNode();
 contentnode.indicators = []; // 用于存储所有小红点元素的数组
 contentnode.selected = [];
