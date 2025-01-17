@@ -88,25 +88,26 @@ document.addEventListener('keydown', (event) => {
 
       }
 
-    } else if (event.key === 'ArrowLeft') {
-      try {
-        event.preventDefault(); // 禁止默认行为
+    } 
+    // else if (event.key === 'ArrowLeft') {
+    //   try {
+    //     event.preventDefault(); // 禁止默认行为
 
-        chrome.runtime.sendMessage({ command: "switchLeftTab" })
+    //     chrome.runtime.sendMessage({ command: "switchLeftTab" })
 
-      } catch (error) {
+    //   } catch (error) {
 
-      }
+    //   }
 
-    } else if (event.key === 'ArrowRight') {
-      try {
-        chrome.runtime.sendMessage({ command: "switchRightTab" })
+    // } else if (event.key === 'ArrowRight') {
+    //   try {
+    //     chrome.runtime.sendMessage({ command: "switchRightTab" })
 
-      } catch (error) {
+    //   } catch (error) {
 
-      }
+    //   }
 
-    }
+    // }
   }
   else if (event.key === 'e') {
     try {
