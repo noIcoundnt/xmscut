@@ -1,9 +1,60 @@
+import { BiliInfo } from './biliInfo.js';
 
 let originalPlaybackRate = 1;
 // let fast = false;
 
 var allowedDomains = ["www.youtube.com", "gamer.com.tw"];
 
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'get_folders') {
+    console.log(message);
+    get_folders(sendResponse, message.bid);
+    return true;
+
+
+  } else if (message.action === 'change_folders') {
+    let addList = [];
+    let delList = [];
+    if (message.isAdd) {
+      addList.push(message.folderId);
+    } else {
+      delList.push(message.folderId);
+    }
+    change_folders(sendResponse, message.aid, delList, addList);
+    //todo
+
+  }
+});
+async function change_folders(sendResponse, aid, delList,addList ) {
+  const bili = new BiliInfo();
+  await bili.init();
+  const res = await bili.changefav(aid, delList, addList);
+  console.log(res);
+  if (res.data.code === 0) {
+    sendResponse({ status: 'success', message: '操作成功' });
+  } else {
+    sendResponse({ status: 'error', message: res.data.message });
+  }
+
+}
+
+
+async function get_folders(sendResponse, bid) {
+
+  const bili = new BiliInfo();
+  await bili.init();
+  const res = await bili.fetchOneVideo(bid);
+  console.log(res);
+  const aid = res.data.aid;
+  const result = await bili.fetchAllFoldersWithVideo(aid);
+  result.aid = aid;
+  console.log(result);
+  // sendResponse(result);
+
+  sendResponse(result);
+
+}
 
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -157,7 +208,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             },
           });
         }
-        else if(message.keyState === "keyup") {
+        else if (message.keyState === "keyup") {
           var tab = tabs[0];
           console.log(tab);
 
@@ -165,7 +216,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           chrome.scripting.executeScript({
             target: { tabId: tabId },
             func: function () {
-              
+
               var videos = document.querySelectorAll("video");
               console.log("keyup");
               videos.forEach((video) => {
@@ -197,10 +248,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
     });
   }
-  else if( message.command === "selectTab"){
+  else if (message.command === "selectTab") {
     switchTab(message.index);
   }
-  else if(message.command === "switchLastTab"){
+  else if (message.command === "switchLastTab") {
     switchToLastTab();
   }
 });
@@ -259,7 +310,7 @@ function switchTabRight() {
   });
 }
 
-function switchTab(index ){
+function switchTab(index) {
   chrome.tabs.query({ currentWindow: true }, function (tabs) {
     // 确保 index 在有效范围内
     if (index < 1 || index > tabs.length) {
@@ -323,7 +374,7 @@ chrome.runtime.onInstalled.addListener(() => {
     id: "searchGithub",
     title: "Search GitHub for '%s'",
     contexts: ["selection"]
-    
+
   });
 
   chrome.contextMenus.create({

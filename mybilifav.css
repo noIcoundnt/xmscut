@@ -1,0 +1,26 @@
+
+.bili-folder-item {
+  background-color: #fff;
+  border: 2px solid #ccc;
+  padding: 6px 8px;
+  border-radius: 0 10px 10px 0;
+  max-width: 40px;  
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  color: black;
+  font-size: 12px;
+}
+
+.bili-folder-item.collected {
+  color: green;
+  /* font-size: 20px; */
+}
+
+.bili-folder-item:hover {
+  max-width: 200px;
+  padding-right: 16px;
+  font-size: 20px;
+}

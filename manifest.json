@@ -9,7 +9,9 @@
     "tabs",
     "activeTab",
     "storage",
-    "contextMenus"
+    "contextMenus",
+    "cookies",
+    "webRequest"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -20,10 +22,13 @@
         "<all_urls>"
       ],
       "css": [
-        "visualStyle.css"
+        "visualStyle.css",
+        "mybilifav.css"
       ],
       "js": [
-        "dailyFunction.js"
+        // "axios.min.js",
+        // "biliInfo.js",
+        "/dist/content/dailyFunction.js"
       ],
       "run_at": "document_end",
       "all_frames": true
@@ -41,7 +46,7 @@
     }
   },
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "./dist/background/background.js",
     "type":"module"
   },
   "commands": {},
